@@ -39,11 +39,12 @@ class ViewController: UIViewController, GitUserProfileDelegate {
         if(userViewModal.userPropertiesData.isEmpty){
             collectionViewHeightConstraints.constant = 0
         }
+        
+        // MARK: Making the height of tableViewCell automatic
         self.tableView.estimatedRowHeight = 80
         self.tableView.rowHeight = UITableView.automaticDimension
         
-
-        
+        // MARK: Assigning delegate and data sources
         tableView.dataSource = self
         tableView.delegate = self
         userViewModal.delegate = self
@@ -51,12 +52,14 @@ class ViewController: UIViewController, GitUserProfileDelegate {
         myCollectionView.delegate = self
         myCollectionView.dataSource = self
         
-        myCollectionView.isScrollEnabled = false
+        myCollectionView.isScrollEnabled = false //disabling scrolling of collection view
         
+        // MARK: Hitting the API
         userViewModal.fetchUserData(user: self.user)
         userViewModal.fetchUserRepoData(user: self.user)
         
         myCollectionView.collectionViewLayout = UICollectionViewFlowLayout()
+        
         
         guard let collectionView = myCollectionView, let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
         flowLayout.minimumInteritemSpacing = margin
@@ -126,7 +129,7 @@ extension ViewController : UICollectionViewDelegateFlowLayout{
     }
 }
 
-// MARK: TableView Delegate & Datasource
+// MARK: Extention for TableView Delegate & Datasource
 extension ViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.userViewModal.repoList.count

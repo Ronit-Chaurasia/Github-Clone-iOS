@@ -8,7 +8,7 @@
 import UIKit
 import TagListView
 
-class TableViewCell: UITableViewCell {
+class TableViewCell: UITableViewCell, TagListViewDelegate {
 
     @IBOutlet weak var projectName: UILabel!
     @IBOutlet weak var projectDesc: UILabel!
@@ -54,8 +54,4 @@ class TableViewCell: UITableViewCell {
         else {langColor.isHidden = false}
     }
 }
-extension TableViewCell: TagListViewDelegate{
-    func tagPressed(_ title: String, tagView: TagView, sender: TagListView) -> Void{
-        
-    }
-}
+

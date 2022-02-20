@@ -20,7 +20,7 @@ class ContributorsViewModal{
         self.contributors = contributors
     }
     
-    // MARK: Fetching user data
+    // MARK: Function for fetching user data
     func fetchUserContributorsData(user: String, repo: String){
         contributors?.fetchUserContributorsData(user: user, repo: repo, completionHandler: { status, data, error in
             if let data = data {
