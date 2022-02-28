@@ -5,11 +5,8 @@
 //  Created by Ronit Chaurasia on 10/02/22.
 //
 
-import Foundation
+//import Foundation
 import UIKit
-
-//ibDesignable
-
 
 extension UIImageView {
     func makeImageCircular(){
@@ -20,31 +17,47 @@ extension UIImageView {
     }
 }
 
+extension Date {
+    func localDate() -> Date {
+        let nowUTC = Date()
+        let timeZoneOffset = Double(TimeZone.current.secondsFromGMT(for: nowUTC))
+        guard let localDate = Calendar.current.date(byAdding: .second, value: Int(timeZoneOffset), to: nowUTC) else {return Date()}
+        return localDate
+    }
+}
+
 class Utilities{
-    static func roundOff(number: Int) -> String{
+    static func roundOff(_ number: Int) -> String{
+        let nf = NumberFormatter()
+        nf.roundingMode = .down
+        nf.maximumFractionDigits = 1
+        
         let number = Double(number)
         let thousand = number / 1000
         let million = number / 1000000
         let billion = number / 1000000000
         
         if billion >= 1.0 {
-            return "\(round(billion*10)/10)B"
-        } else if million >= 1.0 {
-            return "\(round(million*10)/10)M"
-        } else if thousand >= 1.0 {
-            return ("\(round(thousand*10/10))K")
-        } else {
+            return nf.string(for: billion)! + "B"
+        }
+        else if million >= 1.0 {
+            return nf.string(for: million)! + "M"
+        }
+        else if thousand >= 1.0 {
+            return nf.string(for: thousand)! + "K"
+        }
+        else {
             return "\(Int(number))"
         }
     }
     
     static func dateDifference(repoDate: String) -> String{
 
+        let now = Date().localDate()
+        
         let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
         
-        let now = Date()
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = .full
         formatter.allowedUnits = [.year, .month, .day, .hour, .minute, .second]
@@ -63,19 +76,31 @@ class Utilities{
 
             
             if(year == 1){
-                return "last updated " + String(year) + " year ago"
+                return "last updated an year ago"
             }
             else if(year > 0){
                 return "last updated " + String(year) + " years ago"
             }
+            else if(month == 1){
+                return "last updated a month ago"
+            }
             else if(month > 0){
                 return "last updated " + String(month) + " months ago"
+            }
+            else if(day == 1){
+                return "last updated a day ago"
             }
             else if(day > 0){
                 return "last updated " + String(day) + " days ago"
             }
+            else if(hour == 1){
+                return "last updated an hour ago"
+            }
             else if(hour > 0){
                 return "last updated " + String(hour) + " hours ago"
+            }
+            else if(minute == 1){
+                return "last updated a minute ago"
             }
             else if(minute > 0){
                 return "last updated " + String(minute) + " minutes ago"

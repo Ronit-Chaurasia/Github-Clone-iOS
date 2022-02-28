@@ -11,10 +11,9 @@ import UIKit
 struct UserModal: Codable {
     var name : String?
     var userImgURL: String?
-    var userName : String?
+    var userName : String
     var bio : String?
     var repoCount: Int?
-    var stars: String?
     var followers: Int?
     var followings: Int?
     var imgData: Data?
@@ -25,14 +24,14 @@ struct UserModal: Codable {
         case userName = "login"
         case bio = "bio"
         case repoCount = "public_repos"
-        case stars = "starred_url"
         case followers = "followers"
         case followings = "following"
+        case imgData 
     }
 }
 
 struct RepoModal: Codable{
-    var name: String?
+    var name: String
     var visibility: String?
     var description: String?
     var language: String?
@@ -54,7 +53,7 @@ struct RepoModal: Codable{
 }
 
 struct ContributorModal: Codable{
-    var name: String?
+    var name: String
     var avatar_url: String?
     var contributions: Int?
     var imgData: Data?

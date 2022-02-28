@@ -10,8 +10,10 @@ import TagListView
 
 class ViewController: UIViewController, GitUserProfileDelegate {
     
+    static let x = FetchUserRepository()
+    
     // MARK: Stored Properties
-    let userViewModal = GitUserProfileViewModal(repository: FetchUserRepository())
+    let userViewModal = GitUserProfileViewModal(repository: x)
     var user = "kudoleh"
     let margin: CGFloat = 10
     
@@ -39,6 +41,7 @@ class ViewController: UIViewController, GitUserProfileDelegate {
         if(userViewModal.userPropertiesData.isEmpty){
             collectionViewHeightConstraints.constant = 0
         }
+        tableView.isHidden = true
         
         // MARK: Making the height of tableViewCell automatic
         self.tableView.estimatedRowHeight = 80
@@ -60,7 +63,6 @@ class ViewController: UIViewController, GitUserProfileDelegate {
         
         myCollectionView.collectionViewLayout = UICollectionViewFlowLayout()
         
-        
         guard let collectionView = myCollectionView, let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
         flowLayout.minimumInteritemSpacing = margin
         flowLayout.minimumLineSpacing = margin
@@ -75,8 +77,11 @@ class ViewController: UIViewController, GitUserProfileDelegate {
     
     // MARK: Conforming UserFetchApiDelegate Protocol
     func updateUIAfterFetchUserData(){
+        
         DispatchQueue.main.async {
             guard let userName = self.userViewModal.userData?.userName else{return}
+            self.tableView.isHidden = false
+            
             self.userName.text = self.userViewModal.userData?.name
             self.userUserName.text = String("@") + (userName)
             self.userBio.text = self.userViewModal.userData?.bio
@@ -86,6 +91,12 @@ class ViewController: UIViewController, GitUserProfileDelegate {
                 self.collectionViewHeightConstraints.constant = 66
                 self.myCollectionView.reloadData()
             }
+        }
+    }
+    
+    func updateUIAfterUserNotFound() {
+        DispatchQueue.main.async {
+            self.tableView.isHidden = true
         }
     }
     
@@ -139,17 +150,14 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
         let cell = tableView.dequeueReusableCell(withIdentifier: "tableViewCell") as! TableViewCell
         let repoList = userViewModal.repoList[indexPath.row]
         cell.setData(repoList: repoList)
-
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         let contributorsVC = storyboard?.instantiateViewController(withIdentifier: "ContributorsViewController") as! ContributorsViewController
-        contributorsVC.repoName = userViewModal.repoList[indexPath.row].name!
+        contributorsVC.repoName = userViewModal.repoList[indexPath.row].name
         contributorsVC.userName = self.user
         navigationController?.pushViewController(contributorsVC, animated: true)
-
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }

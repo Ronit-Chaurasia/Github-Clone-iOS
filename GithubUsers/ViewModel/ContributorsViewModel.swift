@@ -9,12 +9,14 @@ import Foundation
 
 protocol ContributorsViewModalDelegate{
     func updateContributorsAfterFetchUserData()
+    func updateContributorsAfterContributorsNotFound()
 }
 
 class ContributorsViewModal{
     var contributorsList = [ContributorModal]()
     var delegate: ContributorsViewModalDelegate?
     var contributors: RepositoryProtocol?
+    var errorInFetchingList = false
     
     init(contributors: RepositoryProtocol){
         self.contributors = contributors
@@ -24,10 +26,14 @@ class ContributorsViewModal{
     func fetchUserContributorsData(user: String, repo: String){
         contributors?.fetchUserContributorsData(user: user, repo: repo, completionHandler: { status, data, error in
             if let data = data {
-                self.contributorsList.append(contentsOf: data)
+                self.contributorsList = data
+                self.errorInFetchingList = false
                 self.delegate?.updateContributorsAfterFetchUserData()
             }
-            
+            else{
+                self.errorInFetchingList = true
+                self.delegate?.updateContributorsAfterContributorsNotFound()
+            }
         })
     }
 }

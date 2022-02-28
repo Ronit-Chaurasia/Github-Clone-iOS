@@ -36,8 +36,8 @@ class TableViewCell: UITableViewCell, TagListViewDelegate {
         projectName.text = repoList.name
         projectDesc.text = repoList.description
         language.text = repoList.language
-        starsCount.text = Utilities.roundOff(number: repoList.stargazers_count ?? 0)
-        forksCount.text = Utilities.roundOff(number: repoList.forks ?? 0)
+        starsCount.text = Utilities.roundOff(repoList.stargazers_count ?? 0)
+        forksCount.text = Utilities.roundOff(repoList.forks ?? 0)
         lastUpdate.text = Utilities.dateDifference(repoDate: repoList.updated_at ?? "")
         
         if repoList.topics?.count == 0{

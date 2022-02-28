@@ -7,7 +7,7 @@
 
 import Foundation
 
-// Function to fetch URL
+// Function to set data fetched from URL
 
 // ===========================  Using URLSession ==========================
 // ========================================================================
@@ -15,6 +15,7 @@ import Foundation
 protocol GitUserProfileDelegate{
     func updateUIAfterFetchUserData()
     func updateRepoAfterFetchUserData()
+    func updateUIAfterUserNotFound()
 }
 
 class GitUserProfileViewModal{
@@ -27,7 +28,7 @@ class GitUserProfileViewModal{
     let userProperties = ["repositories", "stars", "followers", "following"]
     var userPropertiesData = [Int]()
     
-    init(repository : RepositoryProtocol){
+    init(repository: RepositoryProtocol){
         self.repository = repository
     }
     
@@ -40,16 +41,17 @@ class GitUserProfileViewModal{
                 self?.userPropertiesData.append(50)
                 self?.userPropertiesData.append((self?.userData?.followers ?? 0))
                 self?.userPropertiesData.append((self?.userData?.followings ?? 0))
+                
                 if let userImage = self?.userData?.userImgURL{
                     self?.fetchUserImage(urlString: userImage)
                 }
                 self?.delegate?.updateUIAfterFetchUserData()
             }
             else{
+                self?.delegate?.updateUIAfterUserNotFound()
                 print("System Error")
             }
         }
-        
     }
     
     // MARK: Fetching user image
@@ -83,11 +85,5 @@ class GitUserProfileViewModal{
 // ==========================  END  ==============================
 //                            *****
 
-// =========================  Using Alamofire  ===========================
-// =======================================================================
-
-
-// ==========================  END  ==============================
-//                            *****
 
 

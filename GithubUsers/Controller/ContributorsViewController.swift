@@ -12,7 +12,7 @@ class ContributorsViewController: UIViewController, ContributorsViewModalDelegat
     // MARK: Stored Properties
     var userName = ""
     var repoName = ""
-    var contributorsViewModal = ContributorsViewModal(contributors: FetchUserRepository())
+    var contributorsViewModal = ContributorsViewModal(contributors: ViewController.x)
 
     // MARK: Outlets
     @IBOutlet weak var contributorsTableView: UITableView!
@@ -36,9 +36,16 @@ class ContributorsViewController: UIViewController, ContributorsViewModalDelegat
                 self.contributorsTableView.reloadData()
             }
             else{
-                // MARK: Handling no contributors found -> kudoleh, SaleForceSDKTestDemo
                 self.contributorNotFoundView.isHidden = false
             }
+        }
+    }
+    
+    func updateContributorsAfterContributorsNotFound() {
+        DispatchQueue.main.async {
+            // MARK: Handling no contributors found -> kudoleh, SaleForceSDKTestDemo
+            self.contributorNotFoundView.isHidden = false
+            self.contributorNotFoundText.text = "Error Fetching Contributors"
         }
     }
 }
@@ -60,7 +67,8 @@ extension ContributorsViewController: UITableViewDelegate, UITableViewDataSource
     // MARK: Navigating to selected contributor's profile
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let VC = storyboard?.instantiateViewController(withIdentifier: "ViewController") as! ViewController
-        VC.user = contributorsViewModal.contributorsList[indexPath.row].name!
+        VC.user = contributorsViewModal.contributorsList[indexPath.row].name
+        
         navigationController?.pushViewController(VC, animated: true)
         contributorsTableView.deselectRow(at: indexPath, animated: true)
     }

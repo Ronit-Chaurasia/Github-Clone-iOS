@@ -20,16 +20,21 @@ class FetchUserRepository: RepositoryProtocol{
         
         if let url = URL(string: "https://api.github.com/users/" + user){
             let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
-                if let error = error {
+                
+                // MARK: Using this coz error always returns nil...
+                guard let httpResponse = response as? HTTPURLResponse else {
                     completionHandler(false, nil, String(describing: error))
                     return
                 }
+                 
+                if httpResponse.statusCode != 200 {
+                    completionHandler(false, nil, String(describing: error))
+                    return
+                }
+                
                 do {
                     if let data = data{
                         let result = try JSONDecoder().decode(UserModal.self, from: data)
-                        if result.userName == nil{
-                            completionHandler(false, nil, String(describing: error))
-                        }
                         completionHandler(true, result, nil)
                     }
                 } catch {
@@ -45,10 +50,17 @@ class FetchUserRepository: RepositoryProtocol{
         
         if let url = URL(string: "https://api.github.com/users/" + user + "/repos"){
             let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
-                if let error = error {
-                    completionHandler(false, nil, error.localizedDescription)
+                
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    completionHandler(false, nil, String(describing: error))
                     return
                 }
+                
+                if httpResponse.statusCode != 200 {
+                    completionHandler(false, nil, String(describing: error))
+                    return
+                }
+                
                 do {
                     if let data = data {
                         let result = try JSONDecoder().decode([RepoModal].self, from: data)
@@ -69,10 +81,16 @@ class FetchUserRepository: RepositoryProtocol{
         if let url = URL(string:"https://api.github.com/repos/" + user + "/" + repo + "/contributors"){
             let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
                 
-                if let error = error {
-                    completionHandler(false, nil, error.localizedDescription)
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    completionHandler(false, nil, String(describing: error))
                     return
                 }
+                
+                if httpResponse.statusCode != 200 {
+                    completionHandler(false, nil, String(describing: error))
+                    return
+                }
+                
                 do {
                     if let data = data {
                         let result = try JSONDecoder().decode([ContributorModal].self, from: data)
